@@ -1,4 +1,3 @@
-import { getToken } from './auth'
 
 export async function searchOffres(query) {
   if (import.meta.env.PROD) {
