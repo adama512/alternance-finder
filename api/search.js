@@ -1,5 +1,8 @@
-export default async function handler(req, res) {
-  const { q } = req.query
+export const config = { runtime: 'edge' }
+
+export default async function handler(req) {
+  const { searchParams } = new URL(req.url)
+  const q = searchParams.get('q') || 'alternance informatique'
 
   const tokenRes = await fetch(
     'https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire',
@@ -22,6 +25,7 @@ export default async function handler(req, res) {
   )
   const data = await offresRes.json()
 
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.json(data.resultats || [])
+  return new Response(JSON.stringify(data.resultats || []), {
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+  })
 }
